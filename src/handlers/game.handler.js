@@ -10,7 +10,7 @@ export const gameStart = (uuid, payload) => {
   return { status: "success" };
 };
 
-export const gameEnd = () => {
+export const gameEnd = (uuid, payload) => {
   const { timestamp: gameEndTime, score } = payload;
   const stages = getStage(uuid);
 
