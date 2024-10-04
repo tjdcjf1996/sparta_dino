@@ -31,11 +31,12 @@ export const moveStageHandler = (userId, payload) => {
   );
   if (!targetStage)
     return { status: "fail", message: "Target stage not found" };
-  // 타겟 스테이지 점수와 기존 스테이지 점수의 차이를 구함.
-  const intervalScore = targetStage.score - curStage.score;
-
+  // 타겟 스테이지 점수와 기존 스테이지 점수의 차이를 구함. (perSecond 계산)
+  const intervalScore =
+    (targetStage.score - curStage.score) / curStage.perSecond;
+  console.log(elapsedTime, intervalScore);
   // 타겟 스테이지 점수 네트워크 시간 오차범위
-  if (elapsedTime < intervalScore - 0.5 || elapsedTime > intervalScore + 0.5) {
+  if (elapsedTime < intervalScore - 1 || elapsedTime > intervalScore + 1) {
     return { status: "fail", message: "Invalid elapsed time" };
   }
 

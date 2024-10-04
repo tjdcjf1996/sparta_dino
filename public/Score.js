@@ -16,6 +16,7 @@ fetchData();
 class Score {
   stage = 0;
   score = 0;
+  perSecond = 1;
   HIGH_SCORE_KEY = "highScore";
   stageChange = true;
 
@@ -26,7 +27,7 @@ class Score {
   }
 
   update(deltaTime) {
-    this.score += deltaTime * 0.001;
+    this.score += deltaTime * this.perSecond * 0.001;
     // 등록된 스테이지 데이터 테이블 점수 내에서만 구동
     if (Math.floor(this.score) <= stageScore[stageScore.length - 1].score) {
       // 다음 스테이지 조건 점수와 현재 점수가 같으면서 stageChance가 true일 때 스테이지 변경 시도
@@ -44,10 +45,14 @@ class Score {
         // 해당 점수가 지나갈 때 stageChange가 true로 바뀌게 1초 setTimeOut 설정
         setTimeout(() => {
           this.stage++;
+          // 스테이지 증가와 동시에 초당 점수 변경
+          this.perSecond = stageScore[this.stage].perSecond;
+
           this.stageChange = true;
         }, 1000);
       }
     }
+    return this.stage;
   }
 
   getItem(itemId) {
@@ -57,6 +62,7 @@ class Score {
   reset() {
     this.score = 0;
     this.stage = 0;
+    this.perSecond = 1;
     this.stageChange = true;
   }
 
