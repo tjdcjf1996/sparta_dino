@@ -2,6 +2,7 @@ import Player from "./Player.js";
 import Ground from "./Ground.js";
 import CactiController from "./CactiController.js";
 import Score from "./Score.js";
+import Stage from "./Stage.js";
 import ItemController from "./ItemController.js";
 import "./Socket.js";
 import { sendEvent } from "./Socket.js";
@@ -69,6 +70,7 @@ let ground = null;
 let cactiController = null;
 let itemController = null;
 let score = null;
+let stage = null;
 
 let scaleRatio = null;
 let previousTime = null;
@@ -142,6 +144,8 @@ function createSprites() {
   );
 
   score = new Score(ctx, scaleRatio);
+
+  stage = new Stage(ctx, scaleRatio);
 }
 
 function getScaleRatio() {
@@ -203,6 +207,7 @@ function reset() {
   gameover = false;
   waitingToStart = false;
 
+  stage.reset();
   ground.reset();
   cactiController.reset();
   score.reset();
@@ -245,12 +250,12 @@ function gameLoop(currentTime) {
     ground.update(gameSpeed, deltaTime);
     // 선인장
     cactiController.update(gameSpeed, deltaTime);
-    itemController.update(gameSpeed, deltaTime);
+    itemController.update(gameSpeed, deltaTime, stage.getStageId());
     // 달리기
     player.update(gameSpeed, deltaTime);
     updateGameSpeed(deltaTime);
 
-    score.update(deltaTime);
+    score.update(deltaTime, stage);
   }
 
   if (!gameover && cactiController.collideWith(player)) {
@@ -261,7 +266,7 @@ function gameLoop(currentTime) {
   }
   const collideWithItem = itemController.collideWith(player);
   if (collideWithItem && collideWithItem.itemId) {
-    score.getItem(collideWithItem.itemId);
+    score.getItem(collideWithItem.itemId, stage);
   }
 
   // draw

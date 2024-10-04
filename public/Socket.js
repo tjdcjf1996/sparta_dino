@@ -21,12 +21,32 @@ socket.on("disconnect", () => {
 });
 
 const sendEvent = (handlerId, payload) => {
-  socket.emit("event", {
-    userId,
-    clientVersion: CLIENT_VERSION,
-    handlerId,
-    payload,
+  return new Promise((resolve) => {
+    socket.emit("event", {
+      userId,
+      clientVersion: CLIENT_VERSION,
+      handlerId,
+      payload,
+    });
+    // 해당 handlerId에 대한 응답을 기다림
+    socket.once(`${handlerId}_response`, (data) => {
+      // 성공 시 데이터를 반환
+      resolve(data);
+    });
   });
 };
+
+// const sendEvent = (handlerId, payload) => {
+//   socket.emit("event", {
+//     userId,
+//     clientVersion: CLIENT_VERSION,
+//     handlerId,
+//     payload,
+//   });
+
+//   socket.once(`${handlerId}_response`, (data) => {
+//     return data;
+//   });
+// };
 
 export { sendEvent };

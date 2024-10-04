@@ -2,6 +2,7 @@ import { CLIENT_VERSION } from "../constant.js";
 import { getUser, removeUser } from "../models/user.model.js";
 import handlerMappings from "./handlerMapping.js";
 import { createStage } from "../models/stage.model.js";
+import { createItems } from "../models/item.model.js";
 
 export const handleDisconnect = (socket, uuid) => {
   removeUser(socket.id);
@@ -13,6 +14,7 @@ export const handleConnection = (socket, uuid) => {
   console.log(`New user Connected! : ${uuid} with socket ID ${socket.id}`);
   console.log(`current users: `, getUser());
   createStage(uuid);
+  createItems(uuid);
   socket.emit("connection", { uuid });
 };
 
@@ -36,5 +38,6 @@ export const handlerEvent = (io, socket, data) => {
     io.emit("response", "broadcast");
     return;
   }
-  socket.emit("response", response);
+  socket.emit(`${data.handlerId}_response`, response);
+  socket.emit(`response`, response);
 };

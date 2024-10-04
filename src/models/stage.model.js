@@ -2,6 +2,7 @@ const stages = {};
 
 export const createStage = (uuid) => {
   stages[uuid] = [];
+  console.log("stages LIST");
   console.log(stages);
 };
 

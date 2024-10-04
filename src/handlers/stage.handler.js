@@ -1,45 +1,60 @@
 import { getGameAssets } from "../init/assets.js";
+import { getItems } from "../models/item.model.js";
 import { getStage, setStage } from "../models/stage.model.js";
 
 export const moveStageHandler = (userId, payload) => {
   let currentStage = getStage(userId);
-  const { stage } = getGameAssets();
+  const { stage, item } = getGameAssets();
 
-  // 유저가 진행한 스테이지가 없을 경우
   if (!currentStage.length) {
     return { status: "fail", message: "No stages found for user" };
   }
 
-  // 최근 진행한 스테이지를 오름차순으로 정렬
   currentStage.sort((a, b) => a.id - b.id);
-  // 가장 맨 뒤의 요소를 가져옴으로써 최근 스테이지를 찾음
   const currentStageId = currentStage[currentStage.length - 1].id;
-  if (currentStageId !== payload.currentStage)
-    return { status: "fail", message: "current stage mismatch" };
 
-  // 점수 검증
+  // 스테이지 ID 검증
+  if (currentStageId !== payload.currentStage) {
+    return {
+      status: "fail",
+      message: `Expected stage ${currentStageId}, but got ${payload.currentStage}`,
+    };
+  }
+
   const serverTime = Date.now();
   const elapsedTime =
     (serverTime - currentStage[currentStage.length - 1].timestamp) / 1000;
 
-  // 기존 스테이지 점수를 구함
   const curStage = stage.data.find((stage) => stage.id === currentStageId);
-
-  // 다음 타켓 스테이지의 점수를 구함.
   const targetStage = stage.data.find(
     (stage) => stage.id === payload.targetStage
   );
-  if (!targetStage)
+
+  if (!targetStage) {
     return { status: "fail", message: "Target stage not found" };
-  // 타겟 스테이지 점수와 기존 스테이지 점수의 차이를 구함. (perSecond 계산)
-  const intervalScore =
-    (targetStage.score - curStage.score) / curStage.perSecond;
-  console.log(elapsedTime, intervalScore);
-  // 타겟 스테이지 점수 네트워크 시간 오차범위
-  if (elapsedTime < intervalScore - 1 || elapsedTime > intervalScore + 1) {
-    return { status: "fail", message: "Invalid elapsed time" };
   }
 
+  // 현재 스테이지에서 먹은 아이템 점수 계산
+  const eatItems = getItems(userId).filter(
+    (item) => item.stage === currentStageId
+  );
+
+  const eatItemScore = eatItems.reduce((acc, cur) => {
+    const itemInfo = item.data.find((i) => i.id === cur.id);
+    const itemScore = itemInfo ? itemInfo.score : 0;
+    return acc + itemScore;
+  }, 0);
+
+  // 예상 점수 계산
+  const expectedScore =
+    Math.floor(elapsedTime * curStage.perSecond) + eatItemScore;
+  console.log(expectedScore);
+  // 검증
+  if (payload.score - 1 > expectedScore || payload.score + 1 < expectedScore) {
+    return { status: "fail", message: "Score verification failed" };
+  }
+
+  // 스테이지 업데이트
   setStage(userId, payload.targetStage, serverTime);
 
   return { status: "success", message: "Move to target stage" };
