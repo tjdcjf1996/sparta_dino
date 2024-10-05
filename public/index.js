@@ -207,12 +207,13 @@ function reset() {
   gameover = false;
   waitingToStart = false;
 
+  itemController.reset();
   stage.reset();
   ground.reset();
   cactiController.reset();
   score.reset();
   gameSpeed = GAME_SPEED_START;
-  sendEvent(2, { timestamp: Date.now() });
+  sendEvent(2, { timestamp: performance.now() });
 }
 
 function setupGameReset() {
@@ -261,7 +262,7 @@ function gameLoop(currentTime) {
   if (!gameover && cactiController.collideWith(player)) {
     gameover = true;
     score.setHighScore();
-    sendEvent(3, { timestamp: Date.now(), score });
+    sendEvent(3, { timestamp: performance.now(), score });
     setupGameReset();
   }
   const collideWithItem = itemController.collideWith(player);

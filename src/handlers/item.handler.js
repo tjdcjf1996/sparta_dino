@@ -8,7 +8,6 @@ export const eatItem = (uuid, payload) => {
   const stageItemList = item_unlock.data.find(
     (asset) => asset.stage_id === payload.stageId
   );
-  console.log(stageItemList);
 
   if (!stageItemList)
     return { status: "fail", message: "Not found item in stage" };
