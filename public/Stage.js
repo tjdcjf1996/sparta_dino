@@ -35,8 +35,12 @@ class Stage {
       currentStage: stageScore[this.stage].id,
       targetStage: stageScore[this.stage + 1].id,
       score,
+      time: performance.now(),
     });
-    if (result.status === "success") this.stage++;
+    if (result.status === "success") {
+      this.stage++;
+      return result;
+    }
   }
 
   reset() {

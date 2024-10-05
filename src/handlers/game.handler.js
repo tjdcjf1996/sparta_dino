@@ -10,10 +10,9 @@ export const gameTime = () => {
 
 export const gameStart = (uuid, payload) => {
   const { stage } = getGameAssets();
-  gameClock = Date.now();
   clearStage(uuid);
   clearItems(uuid);
-  setStage(uuid, stage.data[0].id, payload.timestamp);
+  setStage(uuid, stage.data[0].id, payload.timestamp, 0);
   console.log("stage: ", getStage(uuid));
 
   return { status: "success" };
@@ -22,7 +21,6 @@ export const gameStart = (uuid, payload) => {
 export const gameEnd = (uuid, payload) => {
   const { timestamp: gameEndTime, score } = payload;
   const stages = getStage(uuid);
-  gameClock = Date.now();
   if (!stages.length) {
     return { status: "fail", message: "No stages found for user" };
   }

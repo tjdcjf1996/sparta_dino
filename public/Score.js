@@ -27,7 +27,7 @@ class Score {
     this.scaleRatio = scaleRatio;
   }
 
-  update(deltaTime, stage) {
+  async update(deltaTime, stage) {
     this.score += deltaTime * this.perSecond * 0.001;
     // 등록된 스테이지 데이터 테이블 점수 내에서만 구동
     if (Math.floor(this.score) <= stageScore[stageScore.length - 1].score) {
@@ -38,14 +38,17 @@ class Score {
       ) {
         // 프레임단위 호출이기 때문에 여러번 호출되는 것을 방지
         this.stageChange = false;
-
-        setTimeout(() => {
-          stage.nextStage(this.score);
-          // 스테이지 증가와 동시에 초당 점수 변경
+        const result = await stage.nextStage(this.score);
+        // 스테이지 증가와 동시에 초당 점수 변경
+        if (result.status === "success") {
           this.perSecond = stageScore[stage.getStage()].perSecond;
-
-          this.stageChange = true;
-        }, 1000);
+          console.log(
+            `${stage.getStage()} 스테이지로 변동되었습니다. 지금부터 초당 ${this.perSecond}점씩 오릅니다.`
+          );
+          setTimeout(() => {
+            this.stageChange = true;
+          }, 1000);
+        }
       }
     }
   }
