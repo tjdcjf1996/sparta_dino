@@ -1,8 +1,10 @@
 import { CLIENT_VERSION } from "./Constants.js";
 
+let uuid = localStorage.getItem("uuid");
 const socket = io("http://localhost:3000", {
   query: {
     clientVersion: CLIENT_VERSION,
+    uuid,
   },
 });
 
@@ -12,7 +14,12 @@ socket.on("response", (data) => {
 });
 
 socket.on("connection", (data) => {
-  console.log("connection: ", data);
+  console.log("connection: ", data, uuid);
+
+  if (uuid === "null") {
+    localStorage.setItem("uuid", data.uuid);
+    console.log("UUID saved to localStorage:", data.uuid);
+  }
   userId = data.uuid;
 });
 

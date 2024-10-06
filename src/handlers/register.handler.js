@@ -4,7 +4,9 @@ import { handleConnection, handleDisconnect, handlerEvent } from "./helper.js";
 
 const registerHandler = (io) => {
   io.on("connection", (socket) => {
-    const userUUID = uuidV4();
+    const { uuid } = socket.handshake.query;
+    const userUUID = uuid !== "null" ? uuid : uuidV4();
+
     addUser({ uuid: userUUID, socketId: socket.id });
 
     handleConnection(socket, userUUID);
