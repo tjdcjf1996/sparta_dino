@@ -3,10 +3,11 @@ import { createServer } from "http";
 import initSocket from "./init/socket.js";
 import { loadGameAssets } from "./init/assets.js";
 import { getGameAssets } from "../src/init/assets.js";
+import { connectRedis } from "./init/redis.js";
 
 const app = express();
 const server = createServer(app);
-
+connectRedis();
 const PORT = 3000;
 
 app.use(express.json());
