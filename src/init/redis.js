@@ -1,19 +1,12 @@
-import { createClient } from "redis";
+import { Redis } from "ioredis";
 
-export const redisClient = createClient({
-  url: "redis://192.168.0.3:6379", // Redis 서버 URL
-});
+export const redisClient = new Redis(6379, "192.168.0.3");
 
 // Redis 연결 및 에러 처리
-export const connectRedis = async () => {
-  try {
-    await redisClient.connect();
-    console.log("Connected to Redis");
-  } catch (err) {
-    console.error("Redis connection error:", err);
-  }
-};
+redisClient.on("connect", () => {
+  console.log("Connected to Redis");
+});
 
 redisClient.on("error", (err) => {
-  console.log("Redis Error : ", err);
+  console.error("Redis error:", err);
 });
