@@ -18,7 +18,7 @@ export const handleConnection = (socket, uuid) => {
   socket.emit("connection", { uuid });
 };
 
-export const handlerEvent = (io, socket, data) => {
+export const handlerEvent = async (io, socket, data) => {
   if (!CLIENT_VERSION.includes(data.clientVersion)) {
     socket.emit("response", {
       status: "fail",
@@ -32,7 +32,17 @@ export const handlerEvent = (io, socket, data) => {
     socket.emit("response", { status: "fail", message: "Handler not found" });
   }
 
-  const response = handler(data.userId, data.payload);
+  const response = await handler(data.userId, data.payload);
+
+  if (response instanceof Promise) {
+    response.then((responseValue) => {
+      if (responseValue.broadcast) {
+        io.emit("response", "broadcast");
+        return;
+      }
+      socket.emit(`${data.handlerId}_response`, responseValue);
+    });
+  }
 
   if (response.broadcast) {
     io.emit("response", "broadcast");
