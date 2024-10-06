@@ -1,5 +1,5 @@
 import { getGameAssets } from "../init/assets.js";
-import { clearItems, getItems } from "../models/item.model.js";
+import { getItems } from "../models/item.model.js";
 import { getStage, setStage } from "../models/stage.model.js";
 
 export const moveStageHandler = (userId, payload) => {
