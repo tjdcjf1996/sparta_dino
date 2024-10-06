@@ -18,7 +18,8 @@ await fetchData();
 class Score {
   score = 0;
   perSecond = 1;
-  HIGH_SCORE_KEY = "highScore";
+  HIGH_SCORE = 0;
+  TOTAL_HIGH_SCORE = 0;
   stageChange = true;
 
   constructor(ctx, scaleRatio) {
@@ -76,10 +77,32 @@ class Score {
     this.stageChange = true;
   }
 
-  setHighScore() {
-    const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
-    if (this.score > highScore) {
-      localStorage.setItem(this.HIGH_SCORE_KEY, Math.floor(this.score));
+  async getHighScore() {
+    try {
+      const score = await sendEvent(30, {});
+      const totalHighScore = await sendEvent(31, {});
+
+      // score 값이 없거나 실패한 경우 처리
+      if (!score || score.status) {
+        console.log("Fail loading user score");
+        this.HIGH_SCORE = 0; // 기본값 0 설정
+      } else {
+        this.HIGH_SCORE = score || 0; // 점수 설정 (유효하지 않으면 0)
+      }
+
+      if (!totalHighScore || totalHighScore.status === "fail") {
+        console.log("Fail loading total user high score");
+        this.TOTAL_HIGH_SCORE = 0; // 기본값 0 설정
+      } else {
+        this.TOTAL_HIGH_SCORE = totalHighScore.score || 0; // 점수 설정 (유효하지 않으면 0)
+      }
+
+      console.log("Updated HIGH_SCORE: ", this.HIGH_SCORE);
+      console.log("Updated TOTAL_HIGH_SCORE: ", this.TOTAL_HIGH_SCORE);
+    } catch (error) {
+      // 에러 처리
+      console.error("Error fetching score: ", error);
+      this.HIGH_SCORE = 0; // 에러 시 기본값 0 설정
     }
   }
 
@@ -88,7 +111,7 @@ class Score {
   }
 
   draw() {
-    const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
+    const highScore = this.HIGH_SCORE;
     const y = 20 * this.scaleRatio;
 
     const fontSize = 20 * this.scaleRatio;

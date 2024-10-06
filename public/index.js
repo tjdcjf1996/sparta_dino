@@ -212,6 +212,7 @@ function reset() {
   ground.reset();
   cactiController.reset();
   score.reset();
+  score.getHighScore();
   gameSpeed = GAME_SPEED_START;
   sendEvent(2, { timestamp: performance.now() });
 }
@@ -261,7 +262,6 @@ function gameLoop(currentTime) {
 
   if (!gameover && cactiController.collideWith(player)) {
     gameover = true;
-    score.setHighScore();
     sendEvent(3, { timestamp: performance.now(), score });
     setupGameReset();
   }
@@ -275,6 +275,7 @@ function gameLoop(currentTime) {
   cactiController.draw();
   ground.draw();
   score.draw();
+  stage.draw();
   itemController.draw();
 
   if (gameover) {

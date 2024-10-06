@@ -19,7 +19,7 @@ export const gameStart = (uuid, payload) => {
   return { status: "success" };
 };
 
-export const gameEnd = (uuid, payload) => {
+export const gameEnd = async (uuid, payload) => {
   const { timestamp: gameEndTime, score } = payload;
   let currentStage = getStage(uuid);
   const { item } = getGameAssets();
@@ -56,14 +56,15 @@ export const gameEnd = (uuid, payload) => {
   if (Math.abs(score.score - expectedScore) > 5) {
     return { status: "fail", message: "score verification failed" };
   }
-  setUserScore(uuid, Math.floor(score.score)).then((result) => {
-    if (result.status === "fail") {
-      console.log(result.message);
-      return result;
-    }
-    console.log("Game ended successfully"); // 게임 종료 확인 로그
+
+  const result = await setUserScore(uuid, Math.floor(score.score));
+  if (result.status === "fail") {
     console.log(result.message);
-  });
+    return result;
+  }
+
+  console.log("Game ended successfully"); // 게임 종료 확인 로그
+  console.log(result.message);
 
   return { status: "success", message: "Game Ended", score };
 };
