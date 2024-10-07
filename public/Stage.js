@@ -1,6 +1,7 @@
 import { sendEvent } from "./Socket.js";
 
 let stageScore;
+// 스테이지 데이터 테이블 가져오기
 async function fetchData() {
   try {
     const res = await fetch("/api/getAssets");
@@ -35,7 +36,7 @@ class Stage {
       currentStage: stageScore[this.stage].id,
       targetStage: stageScore[this.stage + 1].id,
       score,
-      time: performance.now(),
+      time: performance.now(), // Date.now보다 performance.now가 더 좋다해서 바꿈
     });
     if (result.status === "success") {
       this.stage++;

@@ -25,7 +25,9 @@ socket.on("rank", (data) => {
 
 socket.on("connection", (data) => {
   console.log("connection: ", data, uuid);
-
+  // 소켓 쿼리에 로컬스토리지에 있는 uuid를 담아서 보냄
+  // 없는 경우 서버측에서 data에 uuid를 생성해서 보냄
+  // 클라이언트측에서 로컬스토리지 저장 과정 거침
   if (uuid === "null") {
     localStorage.setItem("uuid", data.uuid);
     console.log("UUID saved to localStorage:", data.uuid);
@@ -53,6 +55,7 @@ const sendEvent = (handlerId, payload) => {
   });
 };
 
+// 동기처리 sendEvent 백업
 // const sendEvent = (handlerId, payload) => {
 //   socket.emit("event", {
 //     userId,

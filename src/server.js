@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 initSocket(server); // 소켓 추가
 
+// 클라이언트에서 데이터 테이블을 받기 위한 api
 app.get("/api/getAssets", (req, res) => {
   const data = getGameAssets();
   if (!data) return res.status(404).json({ message: "Not found assets" });

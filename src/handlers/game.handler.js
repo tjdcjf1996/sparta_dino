@@ -1,20 +1,14 @@
 import { getGameAssets } from "../init/assets.js";
 import { clearItems, getItems } from "../models/item.model.js";
 import { clearStage, getStage, setStage } from "../models/stage.model.js";
-import { getUserScore, setUserScore } from "../handlers/redis.handler.js";
-
-let gameClock;
-
-export const gameTime = () => {
-  return gameClock;
-};
+import { setUserScore } from "../handlers/redis.handler.js";
 
 export const gameStart = (uuid, payload) => {
   const { stage } = getGameAssets();
   clearStage(uuid);
   clearItems(uuid);
+  // 스테이지 0으로 설정
   setStage(uuid, stage.data[0].id, payload.timestamp, 0);
-  console.log("stage: ", getStage(uuid));
 
   return { status: "success" };
 };
@@ -63,7 +57,6 @@ export const gameEnd = async (uuid, payload) => {
     return result;
   }
   console.log("Game ended successfully"); // 게임 종료 확인 로그
-  console.log(result.message);
 
   if (result.broadcast) {
     return result;

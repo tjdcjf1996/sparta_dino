@@ -77,21 +77,20 @@ class Score {
     this.stageChange = true;
   }
 
+  // 처리할 때 자신의 최고점수와 유저랭크 최고점수를 가져옴
   async getHighScore() {
     try {
       const score = await sendEvent(30, {});
       const totalHighScore = await sendEvent(31, {});
-      console.log("score: ", score);
-      console.log(totalHighScore);
 
-      // score 값이 없거나 실패한 경우 처리
+      // score 존재 여부 검증
       if (!score || score.status) {
         console.log("Fail loading user score");
         this.HIGH_SCORE = 0; // 기본값 0 설정
       } else {
         this.HIGH_SCORE = score || 0; // 점수 설정 (유효하지 않으면 0)
       }
-
+      // totalHighScore 존재 여부 검증
       if (!totalHighScore || totalHighScore.status === "fail") {
         console.log("Fail loading total user high score");
         this.TOTAL_HIGH_SCORE = 0; // 기본값 0 설정
@@ -102,6 +101,7 @@ class Score {
       // 에러 처리
       console.error("Error fetching score: ", error);
       this.HIGH_SCORE = 0; // 에러 시 기본값 0 설정
+      this.TOTAL_HIGH_SCORE = 0; // 에러 시 기본값 0 설정
     }
   }
 
