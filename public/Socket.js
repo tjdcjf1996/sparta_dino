@@ -13,6 +13,16 @@ socket.on("response", (data) => {
   console.log(data);
 });
 
+socket.on("rank", (data) => {
+  const rank = document.getElementById("rank");
+  rank.innerHTML = `
+    <h2>유저 1등 점수 ${data.score}점으로 갱신! </h2>
+    `;
+  setTimeout(() => {
+    rank.innerHTML = ``;
+  }, 5000);
+});
+
 socket.on("connection", (data) => {
   console.log("connection: ", data, uuid);
 

@@ -213,6 +213,7 @@ function reset() {
   cactiController.reset();
   score.reset();
   score.getHighScore();
+
   gameSpeed = GAME_SPEED_START;
   sendEvent(2, { timestamp: performance.now() });
 }

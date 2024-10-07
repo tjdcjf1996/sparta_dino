@@ -62,9 +62,12 @@ export const gameEnd = async (uuid, payload) => {
     console.log(result.message);
     return result;
   }
-
   console.log("Game ended successfully"); // 게임 종료 확인 로그
   console.log(result.message);
+
+  if (result.broadcast) {
+    return result;
+  }
 
   return { status: "success", message: "Game Ended", score };
 };

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -30,11 +30,49 @@
       canvas {
         border: 2px solid grey;
       }
+      .rank-div {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #f9f9f9;
+        max-width: 50%;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .rank-div h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      .rank-div ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .rank {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        width: 40rem;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .rank:last-child {
+        border-bottom: none; /* 마지막 유저의 아래쪽 경계선 제거 */
+      }
     </style>
     <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
     <script src="./index.js" type="module"></script>
   </head>
   <body>
     <canvas id="game"></canvas>
+    <div class="rank-div">
+      <ul>
+        <li class="rank">
+          <span id="rank"></span>
+        </li>
+      </ul>
+    </div>
   </body>
 </html>

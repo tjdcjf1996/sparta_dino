@@ -81,6 +81,8 @@ class Score {
     try {
       const score = await sendEvent(30, {});
       const totalHighScore = await sendEvent(31, {});
+      console.log("score: ", score);
+      console.log(totalHighScore);
 
       // score 값이 없거나 실패한 경우 처리
       if (!score || score.status) {
@@ -96,9 +98,6 @@ class Score {
       } else {
         this.TOTAL_HIGH_SCORE = totalHighScore.score || 0; // 점수 설정 (유효하지 않으면 0)
       }
-
-      console.log("Updated HIGH_SCORE: ", this.HIGH_SCORE);
-      console.log("Updated TOTAL_HIGH_SCORE: ", this.TOTAL_HIGH_SCORE);
     } catch (error) {
       // 에러 처리
       console.error("Error fetching score: ", error);
@@ -111,6 +110,7 @@ class Score {
   }
 
   draw() {
+    const totalHighScore = this.TOTAL_HIGH_SCORE;
     const highScore = this.HIGH_SCORE;
     const y = 20 * this.scaleRatio;
 
@@ -120,12 +120,15 @@ class Score {
 
     const scoreX = this.canvas.width - 75 * this.scaleRatio;
     const highScoreX = scoreX - 125 * this.scaleRatio;
+    const totalHighScoreX = scoreX - 350 * this.scaleRatio;
 
     const scorePadded = Math.floor(this.score).toString().padStart(6, 0);
     const highScorePadded = highScore.toString().padStart(6, 0);
+    const totalHighScorePadded = totalHighScore.toString().padStart(6, 0);
 
     this.ctx.fillText(scorePadded, scoreX, y);
     this.ctx.fillText(`HI ${highScorePadded}`, highScoreX, y);
+    this.ctx.fillText(`TOTAL HI ${totalHighScorePadded}`, totalHighScoreX, y);
   }
 }
 

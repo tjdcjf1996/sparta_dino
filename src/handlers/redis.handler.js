@@ -55,6 +55,17 @@ export const setUserScore = async (uuid, score) => {
     await redisClient.hset(hashKey, "bestScore", bestScore);
     // 랭크를 위해 zAdd로 set도 추가
     await redisClient.zadd("rank", bestScore, uuid);
+
+    const HighScore = await getHighScore();
+    console.log(HighScore);
+    if (HighScore.status === "success") {
+      console.log(HighScore.score, bestScore);
+      if (Number(HighScore.score) === bestScore) {
+        console.log("최고기록 갱신");
+        return { broadcast: true, types: "rank", score: bestScore };
+      }
+    }
+
     return { status: "success", message: "Score set successfully" };
   } catch (err) {
     console.error("Error retrieving user score:", err);

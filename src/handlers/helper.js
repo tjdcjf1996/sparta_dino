@@ -37,7 +37,7 @@ export const handlerEvent = async (io, socket, data) => {
   if (response instanceof Promise) {
     response.then((responseValue) => {
       if (responseValue.broadcast) {
-        io.emit("response", "broadcast");
+        io.emit(response.types, { score: response.score });
         return;
       }
       socket.emit(`${data.handlerId}_response`, responseValue);
@@ -45,7 +45,7 @@ export const handlerEvent = async (io, socket, data) => {
   }
 
   if (response.broadcast) {
-    io.emit("response", "broadcast");
+    io.emit(response.types, { score: response.score });
     return;
   }
   socket.emit(`${data.handlerId}_response`, response);
