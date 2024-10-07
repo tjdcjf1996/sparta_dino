@@ -59,8 +59,7 @@ export const setUserScore = async (uuid, score) => {
     const HighScore = await getHighScore();
     console.log(HighScore);
     if (HighScore.status === "success") {
-      console.log(HighScore.score, bestScore);
-      if (Number(HighScore.score) === bestScore) {
+      if (Number(HighScore.score) === score) {
         console.log("최고기록 갱신");
         return { broadcast: true, types: "rank", score: bestScore };
       }
