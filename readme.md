@@ -1,3 +1,4 @@
+![Animation](https://github.com/user-attachments/assets/534fb663-6f5f-4753-92e9-8547d1c99dc2)
 
 # Sparta Dino
 
