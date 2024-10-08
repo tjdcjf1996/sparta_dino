@@ -48,6 +48,11 @@ export const handlerEvent = async (io, socket, data) => {
   // broadcast가 true일 경우
   if (response.broadcast) {
     io.emit(response.types, { score: response.score });
+    socket.emit(`response`, {
+      status: response.status,
+      message: response.message,
+      score: response.score,
+    });
     return;
   }
   socket.emit(`${data.handlerId}_response`, response);

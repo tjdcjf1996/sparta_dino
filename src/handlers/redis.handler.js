@@ -60,7 +60,13 @@ export const setUserScore = async (uuid, score) => {
     // 랭크 1위를 갱신하면 broadcast로 리턴
     if (HighScore.status === "success") {
       if (Number(HighScore.score) === score) {
-        return { broadcast: true, types: "rank", score: bestScore };
+        return {
+          broadcast: true,
+          types: "rank",
+          score: bestScore,
+          status: "success",
+          message: "Score set successfully",
+        };
       }
     }
     return { status: "success", message: "Score set successfully" };
